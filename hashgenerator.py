@@ -12,10 +12,10 @@ def b64_from_24bit(a, b ,c ,d):
         final_str+=b64_str[w & 0x3f]
         w = w >> 6
 
-m=md5.new('1hfT7jp2q1')
+m=md5.new('chfT7jp2qc')
 m_tem=m.digest()
-m=md5.new('1$1$hfT7jp2q'+m_tem[0])
-key='1'
+m=md5.new('c$1$hfT7jp2q'+m_tem[0])
+key='c'
 length=len(key)
 while(length>0):
     if(length &1 !=0):
@@ -31,7 +31,7 @@ m_alt=m.digest()
 print base64.encodestring(m_alt)
 for i in range(0, 1000):
     if( i&1 != 0):
-        m=md5.new('1')
+        m=md5.new('c')
     else:
         m=md5.new(m_alt)
 
@@ -39,12 +39,12 @@ for i in range(0, 1000):
         m.update('hfT7jp2q')
 
     if(i % 7 != 0):
-        m.update('1')
+        m.update('c')
 
     if(i & 1 !=0):
         m.update(m_alt)
     else:
-        m.update('1')
+        m.update('c')
 
     m_alt=m.digest()
     print base64.encodestring(m.digest())

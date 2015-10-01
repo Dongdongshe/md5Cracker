@@ -3,24 +3,28 @@ import sys
 import md5
 import multiprocessing
 
-# list all possible chars 
-chars = string.ascii_lowercase + string.digits
-# distribute all possible chars to four processes to crack simultaneounsly 
-char1 = 'abcdefghi'
-char2 = 'klmnopqrs'
-char3 = 'tuvwxyz01'
-char4 = '23456789j'
-#char1 = 'abcdefghijklmnopq'
-#char2 = 'rstuvwxyz01234567'
-#char3 = '89!"#\$%&\'()*+,-./'
-#char4 = ':;<=>?@[\\]^_`{|}~'
-#chars = string.ascii_lowercase + string.digits + string.punctuation
+# list all possible chars
+b64_str='./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+final_str=""
+chars = string.ascii_lowercase
+# distribute all possible chars to four processes to crack simultaneounsly
+char1 = 'abcdef'
+char2 = 'ghijkl'
+char3 = 'mnopqr'
+char4 = 'stuvwxyz'
 # slat string
 salt = 'hfT7jp2q'
 # given hash value, original from is base64 (22 bits), convert it to 32 bits hex on this website http://cryptii.com/base64/md5
-hash = 'd41d8cd98f00b204e9800998ecf8427e'
+hash = '/sDfNdP2e3OCxg2zGq1FK0'
 
-# compare hash value of guessing passsword with given one 
+def b64_from_24bit(a, b ,c ,d):
+    global final_str
+    w = (ord(a)<<16)|(ord(b)<<8)|ord(c)
+    for i in range(0, d):
+        final_str+=b64_str[w & 0x3f]
+        w = w >> 6
+
+# compare hash value of guessing passsword with given one
 def compareMd5(password):
     m = md5.new(password+salt)
     if(m.hexdigest() == hash):
@@ -30,7 +34,7 @@ def compareMd5(password):
 # recurse funtion, if password length is larger than 5, then create four processes to speed the cracking, else use one process
 # to handle it cuz it won't cost much time
 def recurse(width, position, baseString):
-    if(width > 4 and position == 0):
+    if(width > 5 and position == 0):
         print "create processes"
         p1 = multiprocessing.Process(target=recurse1, args=(width, position, baseString))
         p1.start()
@@ -44,6 +48,8 @@ def recurse(width, position, baseString):
         for char in chars:
             if(position < width -1):
                 recurse(width, position + 1, baseString + char)
+            if(width > 5):
+                print baseString + char
             compareMd5(baseString + char)
 
 def recurse1(width, position, baseString):

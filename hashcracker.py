@@ -4,6 +4,7 @@ import md5
 import multiprocessing
 import base64
 
+i=0
 # list all possible chars
 b64_str='./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 final_str=""
@@ -74,30 +75,37 @@ def compareMd5(password):
 # recurse funtion, if password length is larger than 5, then create four processes to speed the cracking, else use one process
 # to handle it cuz it won't cost much time
 def recurse(width, position, baseString):
-    if(width > 1 and position == 0):
-        print "create processes 1"
+    global i
+    if(width > 1 and (width-position) > 3 ):
+        print "create processes " + str(i)
+        a = i
+        i+=1
         p1 = multiprocessing.Process(target=recurse1, args=(width, position, baseString))
         p1.start()
-        print "create processes 2"
+        print "create processes" + str(i)
+        b = i
+        i+=1
         p2 = multiprocessing.Process(target=recurse2, args=(width, position, baseString))
         p2.start()
-        print "create processes 3"
+        print "create processes" + str(i)
+        c=i
+        i+=1
         p3 = multiprocessing.Process(target=recurse3, args=(width, position, baseString))
         p3.start()
+        d = i
+        i+=1
         recurse4(width,position,baseString)
-        print 'process 0 finishes'
+        print 'process'+str(a)+' finishes'
         p1.join()
-        print 'process 1 terminates'
+        print 'process'+str(b)+' terminates'
         p2.join()
-        print 'process 2 terminates'
+        print 'process'+str(c)+' terminates'
         p3.join()
-        print 'process 3 terminates'
+        print 'process'+str(d)+ 'terminates'
     else:
         for char in chars:
             if(position < width -1):
                 recurse(width, position + 1, baseString + char)
-            if(width > 5):
-                print baseString + char
             compareMd5(baseString + char)
 
 def recurse1(width, position, baseString):
@@ -125,7 +133,7 @@ def recurse4(width, position, baseString):
         compareMd5(baseString + char)
 
 # main loop function to guessing password from length 1 to 6.
-for baseWidth in range(1, 4):
+for baseWidth in range(6, 7):
     print "checking passwords width [" + `baseWidth` + "]"
     recurse(baseWidth, 0, "")
 

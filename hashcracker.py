@@ -16,7 +16,6 @@ char4 = 'stuvwxyz'
 salt = 'hfT7jp2q'
 # given hash value, original from is base64 (22 bits), convert it to 32 bits hex on this website http://cryptii.com/base64/md5
 hash = '/sDfNdP2e3OCxg2zGq1FK0'
-
 def b64_from_24bit(a, b ,c ,d):
     global final_str
     w = (ord(a)<<16)|(ord(b)<<8)|ord(c)
@@ -26,8 +25,50 @@ def b64_from_24bit(a, b ,c ,d):
 
 # compare hash value of guessing passsword with given one
 def compareMd5(password):
-    m = md5.new(password+salt)
-    if(m.hexdigest() == hash):
+    global final_str
+    final_str=""
+    m=md5.new(password+salt+password)
+    m_tem=m.digest()
+    m=md5.new(password+'$1$'+salt+m_tem[:len(password)])
+    length=len(password)
+    while(length>0):
+        if(length & 1 !=0):
+            m.update('\0')
+            print 1
+        else:
+            m.update(key[0])
+            print 2
+
+        length>>=1
+
+    m_alt=m.digest()    
+    print base64.encodestring(m_alt)
+    for i in range(0, 1000):
+        if( i&1 != 0):
+            m=md5.new('1')
+        else:
+            m=md5.new(m_alt)
+
+        if(i % 3 != 0):
+            m.update('hfT7jp2q')
+
+        if(i % 7 != 0):
+            m.update('1')
+
+        if(i & 1 !=0):
+            m.update(m_alt)
+        else:
+            m.update('1')
+
+        m_alt=m.digest()
+    
+    b64_from_24bit(m_alt[0],m_alt[6],m_alt[12],4)
+    b64_from_24bit(m_alt[1],m_alt[7],m_alt[13],4)
+    b64_from_24bit(m_alt[2],m_alt[8],m_alt[14],4)
+    b64_from_24bit(m_alt[3],m_alt[9],m_alt[15],4)
+    b64_from_24bit(m_alt[4],m_alt[10],m_alt[5],4)
+    b64_from_24bit('0','0',m_alt[11],2)
+    if(final_str == hash):
         print "crack password" + password
         sys.exit()
 

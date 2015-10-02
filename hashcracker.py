@@ -8,12 +8,12 @@ i=0
 # list all possible chars
 b64_str='./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 final_str=""
-chars = string.ascii_lowercase+'1'
+chars = string.ascii_lowercase
 # distribute all possible chars to four processes to crack simultaneounsly
 char1 = 'abcdefy'
 char2 = 'ghijklz'
 char3 = 'mnopqrx'
-char4 = 'stuvwx'
+char4 = 'stuvw'
 # slat string
 salt = 'hfT7jp2q'
 # given hash value, original from is base64 (22 bits), convert it to 32 bits hex on this website http://cryptii.com/base64/md5
@@ -133,7 +133,7 @@ def recurse4(width, position, baseString):
         compareMd5(baseString + char)
 
 # main loop function to guessing password from length 1 to 6.
-for baseWidth in range(6, 7):
+for baseWidth in range(1, 7):
     print "checking passwords width [" + `baseWidth` + "]"
     recurse(baseWidth, 0, "")
 
